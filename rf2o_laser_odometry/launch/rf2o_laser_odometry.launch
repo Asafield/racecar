@@ -1,0 +1,57 @@
+<!-- 
+  This node presents a fast and precise method to estimate the planar motion of a lidar
+  from consecutive range scans. It is very useful for the estimation of the robot odometry from
+  2D laser range measurements.
+  
+  For more info please visit: http://mapir.isa.uma.es/work/rf2o
+  
+  Requirements:
+  - 2D laser scan, publishing sensor_msgs::LaserScan
+  - TF transform from the laser to the robot base
+  - MRPT (http://www.mrpt.org/)
+        - Tested with v1.3 (official ubuntu release)
+-->
+
+<launch>
+  <arg name="master_odom" default="false"/>
+  <arg name="map_odom_link_relay" default="false"/>
+  <!-- 是否要发布TF变换 base_frame_id-> base_footprint,  odom_frame_id->map 用于主里程计 -->
+  <arg name="publish_tf" default="true" />
+  
+  <node pkg="rf2o_laser_odometry" type="rf2o_laser_odometry_node" name="rf2o_laser_odometry" output="screen">
+    <param name="laser_scan_topic" value="/scan"/>        # topic where the lidar scans are being published
+    <param name="odom_topic" value="/odom_rf2o" />              # topic where tu publish the odometry estimations
+    
+    <!-- Using as master odom. -->
+    <param name="publish_tf" value="true" if="$(arg master_odom)"/>
+    <param name="base_frame_id" value="base_footprint" if="$(arg master_odom)"/>
+    <param name="odom_frame_id" value="map" if="$(arg master_odom)"/>
+    
+    <!-- Using as aid odom. -->
+    <param name="publish_tf" value="$(arg publish_tf)" unless="$(arg master_odom)"/>   # wheter or not to publish the tf::transform (base->odom)
+    <param name="base_frame_id" value="odom_rf2o" unless="$(arg master_odom)"/>   # base_footprint # frame_id (tf) of the mobile robot base. A tf transform from the laser_frame to the base_frame is mandatory
+    <param name="odom_frame_id" value="map" unless="$(arg master_odom)"/>   # odom_rf2o_link             # frame_id (tf) to publish the odometry estimations    
+    
+    <param name="init_pose_from_topic" value="" /> # (Odom topic) Leave empty to start at point (0,0)
+    <param name="freq" value="15.0"/>                            # Execution frequency.
+    <param name="init_pose_position_x" value="-0.5" />                       # verbose
+    <param name="init_pose_position_y" value="0.0" />                       # verbose
+    <param name="init_pose_position_z" value="0.0" />                       # verbose
+    <param name="init_pose_orientation_x" value="0.0" />                       # verbose
+    <param name="init_pose_orientation_y" value="0.0" />                       # verbose
+    <param name="init_pose_orientation_z" value="0.0" />                       # verbose
+    <param name="init_pose_orientation_w" value="1.0" />                       # verbose
+  </node>
+  
+  <!-- static_transform_publisher: http://wiki.ros.org/tf#static_transform_publisher -->
+  <!-- static_transform_publisher x y z yaw pitch roll frame_id child_frame_id period_in_ms -->
+  <node pkg="tf"
+    type="static_transform_publisher"
+    name="tf_relay_map_to_odom"
+    args="0 0 0.01 0 0 0 1 map odom 100"
+    if="$(arg map_odom_link_relay)" />
+
+  <!--node pkg="rosservice" type="rosservice" name="set_laser_odometry_log_level" 
+		args="call - -wait /rf2o_laser_odometry_noderosservice call /rf2o_laser_odometry/set_logger_level {logger: '' level: ''}" /-->
+
+</launch>
