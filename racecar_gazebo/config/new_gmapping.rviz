@@ -6,6 +6,7 @@ Panels:
       Expanded:
         - /Global Options1
         - /Robot1
+        - /Robot1/Image1
       Splitter Ratio: 0.3958640992641449
     Tree Height: 529
   - Class: rviz/Selection
@@ -26,7 +27,7 @@ Panels:
     Experimental: false
     Name: Time
     SyncMode: 0
-    SyncSource: ""
+    SyncSource: Image
 Preferences:
   PromptSaveOnExit: true
 Toolbars:
@@ -225,47 +226,23 @@ Visualization Manager:
               Value: true
             camera_link:
               Value: true
-            chassis:
+            dummy:
               Value: true
             imu_link:
               Value: true
-            laser_link:
-              Value: true
-            left_battery:
-              Value: true
-            left_battery_offset:
-              Value: true
-            left_front_axle_carrier:
-              Value: true
-            left_front_wheel:
-              Value: true
-            left_rear_axle_carrier:
-              Value: true
-            left_rear_wheel:
-              Value: true
-            left_steering_link:
-              Value: true
-            lidar_platform_link:
+            laser_frame:
               Value: true
             map:
               Value: true
             odom:
               Value: true
-            platform_link:
+            wheel_1:
               Value: true
-            right_battery:
+            wheel_2:
               Value: true
-            right_battery_offset:
+            wheel_3:
               Value: true
-            right_front_axle_carrier:
-              Value: true
-            right_front_wheel:
-              Value: true
-            right_rear_axle_carrier:
-              Value: true
-            right_rear_wheel:
-              Value: true
-            right_steering_link:
+            wheel_4:
               Value: true
           Marker Scale: 1
           Name: TF
@@ -274,39 +251,24 @@ Visualization Manager:
           Show Names: true
           Tree:
             map:
-              base_footprint:
-                {}
               odom:
-                base_link:
-                  chassis:
-                    left_battery_offset:
-                      left_battery:
-                        {}
-                    left_rear_axle_carrier:
-                      left_rear_wheel:
-                        {}
-                    left_steering_link:
-                      left_front_axle_carrier:
-                        left_front_wheel:
-                          {}
-                    platform_link:
+                dummy:
+                  base_footprint:
+                    base_link:
                       camera_link:
                         {}
                       imu_link:
                         {}
-                      lidar_platform_link:
-                        laser_link:
-                          {}
-                    right_battery_offset:
-                      right_battery:
+                      laser_frame:
                         {}
-                    right_rear_axle_carrier:
-                      right_rear_wheel:
+                      wheel_1:
                         {}
-                    right_steering_link:
-                      right_front_axle_carrier:
-                        right_front_wheel:
-                          {}
+                      wheel_2:
+                        {}
+                      wheel_3:
+                        {}
+                      wheel_4:
+                        {}
           Update Interval: 0
           Value: true
         - Angle Tolerance: 0.10000000149011612
@@ -357,6 +319,7 @@ Visualization Manager:
               Alpha: 1
               Show Axes: false
               Show Trail: false
+              Value: true
             base_link:
               Alpha: 1
               Show Axes: false
@@ -367,93 +330,40 @@ Visualization Manager:
               Show Axes: false
               Show Trail: false
               Value: true
-            chassis:
+            dummy:
               Alpha: 1
               Show Axes: false
               Show Trail: false
-              Value: true
             imu_link:
               Alpha: 1
               Show Axes: false
               Show Trail: false
               Value: true
-            laser_link:
+            laser_frame:
               Alpha: 1
               Show Axes: false
               Show Trail: false
               Value: true
-            left_battery:
+            wheel_1:
               Alpha: 1
               Show Axes: false
               Show Trail: false
               Value: true
-            left_battery_offset:
-              Alpha: 1
-              Show Axes: false
-              Show Trail: false
-            left_front_axle_carrier:
-              Alpha: 1
-              Show Axes: false
-              Show Trail: false
-            left_front_wheel:
+            wheel_2:
               Alpha: 1
               Show Axes: false
               Show Trail: false
               Value: true
-            left_rear_axle_carrier:
-              Alpha: 1
-              Show Axes: false
-              Show Trail: false
-            left_rear_wheel:
+            wheel_3:
               Alpha: 1
               Show Axes: false
               Show Trail: false
               Value: true
-            left_steering_link:
-              Alpha: 1
-              Show Axes: false
-              Show Trail: false
-            lidar_platform_link:
+            wheel_4:
               Alpha: 1
               Show Axes: false
               Show Trail: false
               Value: true
-            platform_link:
-              Alpha: 1
-              Show Axes: false
-              Show Trail: false
-              Value: true
-            right_battery:
-              Alpha: 1
-              Show Axes: false
-              Show Trail: false
-              Value: true
-            right_battery_offset:
-              Alpha: 1
-              Show Axes: false
-              Show Trail: false
-            right_front_axle_carrier:
-              Alpha: 1
-              Show Axes: false
-              Show Trail: false
-            right_front_wheel:
-              Alpha: 1
-              Show Axes: false
-              Show Trail: false
-              Value: true
-            right_rear_axle_carrier:
-              Alpha: 1
-              Show Axes: false
-              Show Trail: false
-            right_rear_wheel:
-              Alpha: 1
-              Show Axes: false
-              Show Trail: false
-              Value: true
-            right_steering_link:
-              Alpha: 1
-              Show Axes: false
-              Show Trail: false
           Name: RobotModel
           Robot Description: /robot_description
           TF Prefix: ""
@@ -462,7 +372,7 @@ Visualization Manager:
           Visual Enabled: true
         - Class: rviz/Image
           Enabled: true
-          Image Topic: /camera/zed/rgb/image_rect_color
+          Image Topic: /cam
           Max Value: 1
           Median window: 5
           Min Value: 0
