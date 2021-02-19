@@ -8,6 +8,7 @@ Panels:
         - /Status1
         - /Odometry1
         - /Odometry2/Shape1
+        - /Polygon1
       Splitter Ratio: 0.5
     Tree Height: 723
   - Class: rviz/Selection
@@ -96,7 +97,7 @@ Visualization Manager:
           Scale: 1
           Value: true
         Value: true
-      Enabled: true
+      Enabled: false
       Keep: 100
       Name: Odometry
       Position Tolerance: 0.10000000149011612
@@ -112,7 +113,7 @@ Visualization Manager:
         Value: Arrow
       Topic: /vesc/odom
       Unreliable: false
-      Value: true
+      Value: false
     - Alpha: 1
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
@@ -168,7 +169,7 @@ Visualization Manager:
       Value: true
     - Alpha: 0.699999988079071
       Class: rviz/Map
-      Color Scheme: map
+      Color Scheme: costmap
       Draw Behind: false
       Enabled: true
       Name: Map
@@ -210,214 +211,33 @@ Visualization Manager:
     - Alpha: 1
       Class: rviz/RobotModel
       Collision Enabled: false
-      Enabled: true
+      Enabled: false
       Links:
         All Links Enabled: true
         Expand Joint Details: false
         Expand Link Details: false
         Expand Tree: false
         Link Tree Style: Links in Alphabetic Order
-        base_footprint:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        base_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        camera_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        chassis:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        imu_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        laser_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        left_battery:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        left_battery_offset:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        left_front_axle_carrier:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        left_front_wheel:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        left_rear_axle_carrier:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        left_rear_wheel:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        left_steering_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        lidar_platform_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        platform_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        right_battery:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        right_battery_offset:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        right_front_axle_carrier:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        right_front_wheel:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        right_rear_axle_carrier:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        right_rear_wheel:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        right_steering_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
       Name: RobotModel
       Robot Description: robot_description
       TF Prefix: ""
       Update Interval: 0
-      Value: true
+      Value: false
       Visual Enabled: true
     - Class: rviz/TF
-      Enabled: true
+      Enabled: false
       Frame Timeout: 15
       Frames:
         All Enabled: false
-        base_footprint:
-          Value: false
-        base_link:
-          Value: false
-        camera_link:
-          Value: false
-        chassis:
-          Value: false
-        imu_link:
-          Value: false
-        laser_link:
-          Value: false
-        left_battery:
-          Value: false
-        left_battery_offset:
-          Value: false
-        left_front_axle_carrier:
-          Value: false
-        left_front_wheel:
-          Value: false
-        left_rear_axle_carrier:
-          Value: false
-        left_rear_wheel:
-          Value: false
-        left_steering_link:
-          Value: false
-        lidar_platform_link:
-          Value: false
-        map:
-          Value: true
-        odom:
-          Value: true
-        platform_link:
-          Value: false
-        right_battery:
-          Value: false
-        right_battery_offset:
-          Value: false
-        right_front_axle_carrier:
-          Value: false
-        right_front_wheel:
-          Value: false
-        right_rear_axle_carrier:
-          Value: false
-        right_rear_wheel:
-          Value: false
-        right_steering_link:
-          Value: false
       Marker Scale: 1
       Name: TF
       Show Arrows: true
       Show Axes: true
       Show Names: true
       Tree:
-        map:
-          odom:
-            base_footprint:
-              base_link:
-                chassis:
-                  left_battery_offset:
-                    left_battery:
-                      {}
-                  left_rear_axle_carrier:
-                    left_rear_wheel:
-                      {}
-                  left_steering_link:
-                    left_front_axle_carrier:
-                      left_front_wheel:
-                        {}
-                  platform_link:
-                    camera_link:
-                      {}
-                    imu_link:
-                      {}
-                    lidar_platform_link:
-                      laser_link:
-                        {}
-                  right_battery_offset:
-                    right_battery:
-                      {}
-                  right_rear_axle_carrier:
-                    right_rear_wheel:
-                      {}
-                  right_steering_link:
-                    right_front_axle_carrier:
-                      right_front_wheel:
-                        {}
+        {}
       Update Interval: 0
-      Value: true
+      Value: false
     - Angle Tolerance: 0.10000000149011612
       Class: rviz/Odometry
       Covariance:
@@ -435,7 +255,7 @@ Visualization Manager:
           Scale: 1
           Value: true
         Value: true
-      Enabled: true
+      Enabled: false
       Keep: 100
       Name: Odometry
       Position Tolerance: 0.10000000149011612
@@ -450,6 +270,14 @@ Visualization Manager:
         Shaft Radius: 0.05000000074505806
         Value: Arrow
       Topic: /rf2o_odom
+      Unreliable: false
+      Value: false
+    - Alpha: 1
+      Class: rviz/Polygon
+      Color: 25; 255; 0
+      Enabled: true
+      Name: Polygon
+      Topic: /move_base/local_costmap/footprint
       Unreliable: false
       Value: true
   Enabled: true
@@ -480,16 +308,16 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 9.36894702911377
+      Distance: 7.184023380279541
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: -3.5999581813812256
-        Y: -2.1332907676696777
-        Z: 2.6138620376586914
+        X: 2.5861682891845703
+        Y: -3.636624813079834
+        Z: 2.6514177322387695
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
@@ -498,7 +326,7 @@ Visualization Manager:
       Pitch: 1.5647963285446167
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 3.1204171180725098
+      Yaw: 3.105421304702759
     Saved: ~
 Window Geometry:
   Displays:
