@@ -430,10 +430,10 @@
     <wheelDiameter>0.12</wheelDiameter>
     <torque>2</torque>
     <commandTopic>cmd_vel</commandTopic>
-    <odometryTopic>odom1</odometryTopic>
-    <odometryFrame>odom1</odometryFrame>
-    <robotBaseFrame>base_footprint</robotBaseFrame>
-    <broadcastTF>0</broadcastTF>
+    <odometryTopic>odom</odometryTopic>
+    <odometryFrame>odom</odometryFrame>
+    <robotBaseFrame>dummy</robotBaseFrame>
+    <broadcastTF>1</broadcastTF>
   </plugin>
 </gazebo>
 

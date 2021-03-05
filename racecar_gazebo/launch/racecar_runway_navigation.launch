@@ -11,10 +11,7 @@
     <remap from="/racecar/ackermann_cmd_mux/output" to="/vesc/low_level/ackermann_cmd_mux/output"/>
   </node> -->
 
-  <node name="map_server" pkg="map_server" type="map_server" args="$(find racecar_gazebo)/map/map.yaml" />
-
-
-
+  <node name="map_server" pkg="map_server" type="map_server" args="$(find racecar_gazebo)/map/map2.yaml" />
 
   <!--使用amcl进行定位-->
   <include file="$(find racecar_gazebo)/launch/racecar_amcl.launch">
@@ -47,7 +44,7 @@
   <!--rviz-->
   <node pkg="rviz" type="rviz" name="rviz" args="-d $(find racecar_gazebo)/config/racecar_rviz.rviz"/>
   <!--可视化路径-->
-  <node pkg="racecar_gazebo" type="visualize_path.py" name="visualize_path" />
+  <!-- <node pkg="racecar_gazebo" type="visualize_path.py" name="visualize_path" /> -->
   
 	<!-- 比赛计时器 -->
   <node pkg="racecar_gazebo" type="race_timer.py" name="race_timer" output="screen"/>

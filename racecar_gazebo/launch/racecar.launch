@@ -34,21 +34,5 @@
   <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />
   <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"/> 
 
-  <node pkg="rf2o_laser_odometry" type="rf2o_laser_odometry_node" name="rf2o_laser_odometry"> <!-- output="screen" -->
-      <param name="laser_scan_topic" value="/scan"/>        
-      <param name="odom_topic" value="/rf2o_odom" />         
 
-      <!-- Using as aid odom. -->
-      <param name="publish_tf" value="false"/> 
-      <param name="base_frame_id" value="dummy"/>
-      <param name="odom_frame_id" value="odom"/>
-      <param name="init_pose_from_topic" value="" />           
-      <param name="freq" value="60.0"/>                          
-  </node>
-   <!--******************使用ekf定位*****************-->
-  <node pkg="robot_localization" type="ekf_localization_node" name="ekf_se" >
-		<rosparam command="load" file="$(find racecar_gazebo)/config/ekf_params.yaml" />
-		<param name="publish_tf" value="true"/>
-    <remap from="odometry/filtered"  to= "/vesc/odom"/>
-	</node>
 </launch>
