@@ -47,7 +47,7 @@
   <!--rviz-->
   <node pkg="rviz" type="rviz" name="rviz" args="-d $(find racecar_gazebo)/config/racecar_rviz.rviz"/>
   <!--可视化路径-->
-  <!-- <node pkg="racecar_gazebo" type="visualize_path.py" name="visualize_path" /> -->
+  <node pkg="racecar_gazebo" type="visualize_path.py" name="visualize_path" />
   
 	<!-- 比赛计时器 -->
   <node pkg="racecar_gazebo" type="race_timer.py" name="race_timer" output="screen"/>

@@ -32,7 +32,7 @@ class PoseNode:
         # Find the index of the racecar
         try:
             # ---------> base_link
-            arrayIndex = msg.name.index('racecar::base_footprint')
+            arrayIndex = msg.name.index('racecar::dummy')
         except ValueError as e:
             # Wait for Gazebo to startup
             pass
@@ -40,14 +40,6 @@ class PoseNode:
             # Extract our current position information
             self.last_received_pose = msg.pose[arrayIndex]
             self.last_received_twist = msg.twist[arrayIndex]
-
-           
-            # if len(self.pose_x)<2:
-            #   self.pose_y .append(self.last_received_pose.position.x)
-            #   self.pose_y .append(self.last_received_pose.position.y)
-            # elif abs(self.last_received_pose.position.x - self.pose_y[-1])>0.01:
-            #   self.pose_y .append(self.last_received_pose.position.x)
-            #   self.pose_y .append(self.last_received_pose.position.y)
 
 
 
@@ -87,8 +79,8 @@ def velocity_plotter():
     # ax.yaxis.set_major_locator(y_major_locator)
     plotter.legend(loc='upper left') 
     plotter.axis('equal')
-    plotter.xlim((-5,15))
-    plotter.ylim((-6,4))
+    # plotter.xlim((-5,15))
+    # plotter.ylim((-6,4))
     plotter.title('compare_figure')
     # fig.canvas.draw()
     plotter.pause(0.02)
