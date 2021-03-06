@@ -5,7 +5,7 @@ from std_msgs.msg import Bool
 from std_msgs.msg import Float32
 from std_msgs.msg import Float64
 from geometry_msgs.msg import Twist
-from ackermann_msgs.msg import AckermannDriveStamped
+# from ackermann_msgs.msg import AckermannDriveStamped
 
 flag_move = 0
 
@@ -19,14 +19,14 @@ def limsteer(data,maxdata):
 def set_speed(data):
     global flag_move
     
-    pub_vel_left_rear_wheel = rospy.Publisher('/racecar/left_rear_wheel_velocity_controller/command', Float64, queue_size=1)
+    pub_vel_left_rear_wheel = rospy.Publisher('/vesc/cmd_vel', Twist, queue_size=1)
+    vel = Twist()
+    vel.linear.x = data.linear.x*1.1 
+    vel.angular.z = data.angular.z*1.12
     
-    x = data.linear.x  
-    z = data.angular.z
-    
-        vR_front =vR_front*120
+        
 
-    pub_vel_left_rear_wheel.publish(vL_rear)
+    pub_vel_left_rear_wheel.publish(vel)
     
 
 def servo_commands():
