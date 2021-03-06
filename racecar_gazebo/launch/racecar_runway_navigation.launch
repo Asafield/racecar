@@ -2,7 +2,7 @@
 <launch>
   <!-- Launch the racecar -->
   <include file="$(find racecar_gazebo)/launch/racecar.launch">
-    <arg name="world_name" value="race_obj"/>
+    <arg name="world_name" value="obj"/>
   </include>
 
   <!-- servo node -->
@@ -23,11 +23,11 @@
   <!--Launch the move base with time elastic band-->
   <param name="/use_sim_time" value="true"/>
   <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
-    <rosparam file="$(find racecar_gazebo)/config/backup/costmap_common_params.yaml" command="load" ns="global_costmap" />
-    <rosparam file="$(find racecar_gazebo)/config/backup/costmap_common_params.yaml" command="load" ns="local_costmap" />
-    <rosparam file="$(find racecar_gazebo)/config/backup/local_costmap_params.yaml" command="load" />
-    <rosparam file="$(find racecar_gazebo)/config/backup/global_costmap_params.yaml" command="load" />
-    <rosparam file="$(find racecar_gazebo)/config/backup/teb_local_planner_params.yaml" command="load" />
+    <rosparam file="$(find racecar_gazebo)/config/costmap_common_params.yaml" command="load" ns="global_costmap" />
+    <rosparam file="$(find racecar_gazebo)/config/costmap_common_params.yaml" command="load" ns="local_costmap" />
+    <rosparam file="$(find racecar_gazebo)/config/local_costmap_params.yaml" command="load" />
+    <rosparam file="$(find racecar_gazebo)/config/global_costmap_params.yaml" command="load" />
+    <rosparam file="$(find racecar_gazebo)/config/teb_local_planner_params.yaml" command="load" />
     <!-- <rosparam file="$(find racecar_gazebo)/config/teb_local_planner_params.yaml" command="load" /> -->
 
     <param name="base_global_planner" value="global_planner/GlobalPlanner" />
