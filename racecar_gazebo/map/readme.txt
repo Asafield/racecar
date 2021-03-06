@@ -1,0 +1,2 @@
+map:是利用gmapping建的图
+map2：是使用的cartographer建的图
