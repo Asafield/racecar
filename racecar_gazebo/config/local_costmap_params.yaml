@@ -1,12 +1,12 @@
 local_costmap:
   global_frame: map
-  robot_base_frame: dummy
-  update_frequency: 30.0 #40局部路径会闪
-  publish_frequency: 30.0
+  robot_base_frame: base_link
+  update_frequency: 30.0
+  publish_frequency: 20.0
   rolling_window: true
-  width: 10 #5
-  height: 10 #5
-  resolution: 0.15 #0.1局部路径会闪
+  width: 5
+  height: 5
+  resolution: 0.15
   transform_tolerance: 0.5
   
   plugins:
