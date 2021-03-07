@@ -19,7 +19,7 @@ def limsteer(data,maxdata):
 def set_speed(data):
     global flag_move
     
-    pub_vel_left_rear_wheel = rospy.Publisher('/vesc/cmd_vel', Twist, queue_size=1)
+    pub_vel_left_rear_wheel = rospy.Publisher('/cmd_vel', Twist, queue_size=1)
     vel = Twist()
     vel.linear.x = data.linear.x*1.1 
     vel.angular.z = data.angular.z*1.12
@@ -32,7 +32,7 @@ def set_speed(data):
 def servo_commands():
     rospy.init_node('servo_commands', anonymous=True)
     #rospy.Subscriber("/racecar/ackermann_cmd_mux/output", AckermannDriveStamped, set_throttle_steer)
-    rospy.Subscriber("/cmd_vel", Twist, set_speed)
+    rospy.Subscriber("/vesc/cmd_vel", Twist, set_speed)
 
     # spin() simply keeps python from exiting until this node is stopped
     rospy.spin()
