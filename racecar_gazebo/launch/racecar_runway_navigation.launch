@@ -11,7 +11,7 @@
     <remap from="/racecar/ackermann_cmd_mux/output" to="/vesc/low_level/ackermann_cmd_mux/output"/>
   </node> -->
 
-  <node name="map_server" pkg="map_server" type="map_server" args="$(find racecar_gazebo)/map/map3.yaml" />
+  <node name="map_server" pkg="map_server" type="map_server" args="$(find racecar_gazebo)/map/race2.yaml" />
 
   <!--使用amcl进行定位-->
   <include file="$(find racecar_gazebo)/launch/racecar_amcl.launch">

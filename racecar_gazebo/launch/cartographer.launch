@@ -1,6 +1,7 @@
 <launch>
 
     <include file="$(find racecar_gazebo)/launch/racecar.launch"/>
-    <include file="$(find gazebo_map)/launch/demo_revo_lds.launch"/>
+    <!-- <include file="$(find gazebo_map)/launch/demo_revo_lds.launch"/> -->
+    <include file="$(find gazebo_map)/launch/cartographer_demo.launch"/>
     <!-- <node name="teleop_twist_keyboard" pkg="teleop_twist_keyboard" type="teleop_twist_keyboard.py"/>  -->
 </launch>
