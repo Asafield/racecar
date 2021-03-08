@@ -15,7 +15,7 @@
   </include>
   
   <!-- Load the URDF into the ROS Parameter Server -->
-  <arg name="model" default="$(find racecar_description)/urdf/waking_robot.xacro" />
+  <arg name="model" default="$(find gazebo_pkg)/urdf/waking_robot.xacro" />
  
   <param name="robot_description" command="$(find xacro)/xacro  --inorder $(arg model)" />
  

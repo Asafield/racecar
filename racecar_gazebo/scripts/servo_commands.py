@@ -21,11 +21,22 @@ def set_speed(data):
     
     pub_vel_left_rear_wheel = rospy.Publisher('/cmd_vel', Twist, queue_size=1)
     vel = Twist()
-    vel.linear.x = data.linear.x*1.1 
-    vel.angular.z = data.angular.z*1.12
-    
-        
-
+    x = data.linear.x 
+    z = data.angular.z
+    z= (0 if abs(z) < 0.02 else z)    
+    if z == 0:
+        x=x*2.0
+    elif math.fabs(z)<0.15:
+        x=x*1.1
+        z=z
+    elif math.fabs(z)<0.25:
+        x=x*1.0
+        z=z*1.2
+    else:
+        x=x*0.9
+        z=z*1.8
+    vel.linear.x = x 
+    vel.angular.z = z        
     pub_vel_left_rear_wheel.publish(vel)
     
 
