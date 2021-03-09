@@ -19,21 +19,18 @@ def limsteer(data,maxdata):
 def set_speed(data):
     global flag_move
     
-    pub_vel_left_rear_wheel = rospy.Publisher('/cmd_vel', Twist, queue_size=1)
+    pub_vel_left_rear_wheel = rospy.Publisher('/servo/cmd_vel', Twist, queue_size=1)
     vel = Twist()
     x = data.linear.x 
     z = data.angular.z
-    z= (0 if abs(z) < 0.02 else z)    
+    z= (0 if abs(z) < 0.05 else z)    
     if z == 0:
         x=x*2.0
-    elif math.fabs(z)<0.15:
-        x=x*1.1
-        z=z
     elif math.fabs(z)<0.25:
         x=x*1.0
         z=z*1.2
     else:
-        x=x*0.9
+        x=x*0.92
         z=z*1.8
     vel.linear.x = x 
     vel.angular.z = z        
