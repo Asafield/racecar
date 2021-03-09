@@ -25,13 +25,13 @@ def set_speed(data):
     z = data.angular.z
     z= (0 if abs(z) < 0.05 else z)    
     if z == 0:
-        x=x*2.0
+        x=x*2.28
     elif math.fabs(z)<0.25:
         x=x*1.0
         z=z*1.2
     else:
         x=x*0.92
-        z=z*1.8
+        z=z*1.76
     vel.linear.x = x 
     vel.angular.z = z        
     pub_vel_left_rear_wheel.publish(vel)
