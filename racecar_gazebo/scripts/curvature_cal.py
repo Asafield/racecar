@@ -84,13 +84,13 @@ def cmd_vel_callback(data):
     else:
         turn_data.data=data.angular.z
         if flag == 1:
-            speed_data.data= data.linear.x*1.15
+            speed_data.data= data.linear.x*1.18
         elif flag == 2:
-            speed_data.data= data.linear.x*1.50
+            speed_data.data= data.linear.x*1.75
         elif min_curvature.data <= 3:
             speed_data.data= data.linear.x*1.03
         else:
-            speed_data.data= data.linear.x*1.6   
+            speed_data.data= data.linear.x*1.55   
         #if(math.fabs(turn_data.data)<10):
         #    turn_data.data*=1.0
         #    speed_data.data=data.linear.x*220    #20-math.fabs(turn_data.data)*1.0
