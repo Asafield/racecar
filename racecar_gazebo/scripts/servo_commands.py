@@ -25,7 +25,7 @@ def set_speed(data):
     z = data.angular.z
     z= (0 if abs(z) < 0.05 else z)    
     if z == 0:
-        x=x*2.28
+        x=x*1.6
     elif math.fabs(z)<0.25:
         x=x*1.0
         z=z*1.2

@@ -5,7 +5,7 @@
   <arg name="gui" default="true"/>
   <arg name="headless" default="false"/>
   <arg name="debug" default="false"/>
-  <arg name="world_name" default="race" />
+  <arg name="world_name" default="race_with_cone" />
   <!-- <remap from="robot/laser/scan" to="/scan"/> -->
 
   <include file="$(find gazebo_ros)/launch/empty_world.launch">

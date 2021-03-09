@@ -12,7 +12,7 @@ from tf2_geometry_msgs import PoseStamped
 start_time = None
 start_pose = None
 goal_pose = None
-min_dist = 0.3
+min_dist = 0.5
 
 
 def start(msg):

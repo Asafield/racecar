@@ -21,6 +21,7 @@ from move_base_msgs.msg import MoveBaseActionGoal
 '''-------------global param----------------'''
 point_width = 40
 mid_point = 100
+flag = 0
 '''-------------global param----------------'''
 
 pub_speed = rospy.Publisher("zj_control_cmd/speed", Float64, queue_size = 1)
@@ -75,17 +76,21 @@ def radius_cal(a,b,c):
 
 
 def cmd_vel_callback(data):
-    global min_curvature
+    global min_curvature,flag
     stop_flag = Float64(lenth_cal(float(odom_point_x) , float(goal_point_x) , float(odom_point_y) , float(goal_point_y)))
-    if stop_flag.data <= 0.5:
+    if  stop_flag.data <= 0.3:
         speed_data.data = 0
         turn_data.data = 0
     else:
         turn_data.data=data.angular.z
-        if min_curvature.data <= 3:
-            speed_data.data= data.linear.x*1.0
+        if flag == 1:
+            speed_data.data= data.linear.x*1.15
+        elif flag == 2:
+            speed_data.data= data.linear.x*1.50
+        elif min_curvature.data <= 3:
+            speed_data.data= data.linear.x*1.03
         else:
-            speed_data.data= data.linear.x*1.5   
+            speed_data.data= data.linear.x*1.6   
         #if(math.fabs(turn_data.data)<10):
         #    turn_data.data*=1.0
         #    speed_data.data=data.linear.x*220    #20-math.fabs(turn_data.data)*1.0
@@ -102,7 +107,8 @@ def cmd_vel_callback(data):
 
 
 
-def path_callback(data):       
+def path_callback(data):  
+    global flag     
     if len(data.poses) <= point_width*2:
         index1 = 0
         index2 = (len(data.poses)-1)//2
@@ -117,7 +123,10 @@ def path_callback(data):
         index3 = mid_point+point_width
     else:
         index1 = index2 = index3 = 0
-
+    if len(data.poses)<=120:
+        flag = 1
+    elif len(data.poses)<=300:
+        flag = 2
 
     point1.header.frame_id = 'map'
     point1.point.x = data.poses[index1].pose.position.x
