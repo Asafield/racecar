@@ -77,13 +77,15 @@ class path_following:
         else:
             self.cmd_data.angular.z=data.angular.z
             if self.flag == 1:
-                self.cmd_data.linear.x= data.linear.x*1.18
+                self.cmd_data.linear.x = data.linear.x*1.1
             elif self.flag == 2:
-                self.cmd_data.linear.x= data.linear.x*1.75
+                self.cmd_data.linear.x = data.linear.x*1.30
+            elif self.flag == 3:
+                self.cmd_data.linear.x = data.linear.x*1.90
             elif self.min_curvature.data <= 3:
-                self.cmd_data.linear.x= data.linear.x*1.03
+                self.cmd_data.linear.x = data.linear.x*1.03
             else:
-                self.cmd_data.linear.x= data.linear.x*1.55      
+                self.cmd_data.linear.x = data.linear.x*1.55      
         self.pub_cmd.publish(self.cmd_data)
 
 
@@ -104,10 +106,12 @@ class path_following:
             index3 = self.mid_point+self.point_width
         else:
             index1 = index2 = index3 = 0
-        if len(data.poses)<=120:
+        if len(data.poses)<=50:
             self.flag = 1
-        elif len(data.poses)<=300:
+        elif len(data.poses)<=120:
             self.flag = 2
+        elif len(data.poses)<=300:
+            self.flag = 3
 
         self.point1.header.frame_id = 'map'
         self.point1.point.x = data.poses[index1].pose.position.x
