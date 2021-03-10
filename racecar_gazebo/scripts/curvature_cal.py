@@ -1,10 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*- 
 
-
-'''
-导航 文件
-'''
 import rospy
 from std_msgs.msg import Float64
 from geometry_msgs.msg import Twist
@@ -18,161 +14,143 @@ import numpy.linalg as LA
 from move_base_msgs.msg import MoveBaseActionGoal
 
 #from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
-'''-------------global param----------------'''
-point_width = 40
-mid_point = 100
-flag = 0
-'''-------------global param----------------'''
+class path_following:
+    def __init__(self):
+        self.point_width = 40 #三个点之间的间隔距离
+        self.mid_point = 100  #中间的点离小车的距离
+        self.flag = 0         #最后一段路程的判断标志，因为本次迅飞的最后一段路程要求不能撞墙，但障碍却少，适合冲刺，所以要求冲的又快又稳，所以需要判断标志
+        self.pub_cmd = rospy.Publisher("/cmd_vel",Twist,queue_size=1)
 
-pub_speed = rospy.Publisher("zj_control_cmd/speed", Float64, queue_size = 1)
-pub_turn = rospy.Publisher("zj_control_cmd/turn", Float64, queue_size = 1)
-pub_curvature = rospy.Publisher("zj_control_cmd/curvature", Float64, queue_size = 1)
-pub_cmd = rospy.Publisher("/cmd_vel",Twist,queue_size=1)
+        self.pub_point1 = rospy.Publisher("point1", PointStamped, queue_size = 1)
+        self.pub_point2 = rospy.Publisher("point2", PointStamped, queue_size = 1)
+        self.pub_point3 = rospy.Publisher("point3", PointStamped, queue_size = 1)
 
-pub_point1 = rospy.Publisher("point1", PointStamped, queue_size = 1)
-pub_point2 = rospy.Publisher("point2", PointStamped, queue_size = 1)
-pub_point3 = rospy.Publisher("point3", PointStamped, queue_size = 1)
+        self.point1 = PointStamped()
+        self.point2 = PointStamped()
+        self.point3 = PointStamped()
 
-point1 = PointStamped()
-point2 = PointStamped()
-point3 = PointStamped()
+        self.speed_data=Float64()
+        self.turn_data=Float64()
+        self.min_curvature = Float64(1000.0)
+        self.cmd_data = Twist()
+        self.goal_point_x = Float64()
+        self.goal_point_y = Float64()
+        self.odom_point_x = Float64()
+        self.odom_point_y = Float64()
+        self.odom_yaw = Float64()
+    def odom_callback(self,data):
+        self.odom_point_x = data.pose.pose.position.x
+        self.odom_point_y = data.pose.pose.position.y
+        self.odom_yaw = data.twist.twist.angular.z
+    def get_goal_callback(self,data):
+        self.goal_point_x = data.goal.target_pose.pose.position.x
+        self.goal_point_y = data.goal.target_pose.pose.position.y
 
-speed_data=Float64()
-turn_data=Float64()
-min_curvature = Float64(1000.0)
-cmd_data = Twist()
-'''-----------------stop car------------------'''
-goal_point_x = Float64()
-goal_point_y = Float64()
-odom_point_x = Float64()
-odom_point_y = Float64()
-odom_yaw = Float64()
-def odom_callback(data):
-    global odom_point_x
-    global odom_point_y
-    global odom_yaw
-    odom_point_x = data.pose.pose.position.x
-    odom_point_y = data.pose.pose.position.y
-    odom_yaw = data.twist.twist.angular.z
-def get_goal_callback(data):
-    global goal_point_x
-    global goal_point_y
-    goal_point_x = data.goal.target_pose.pose.position.x
-    goal_point_y = data.goal.target_pose.pose.position.y
-'''-----------------sopt car------------------'''
+    def lenth_cal(self,x1,x2,y1,y2):
+        x = (x1 - x2)**2
+        y = (y1 - y2)**2
+        l = np.sqrt(x+y)
+        return l
 
-def lenth_cal(x1,x2,y1,y2):
-    x = (x1 - x2)**2
-    y = (y1 - y2)**2
-    l = np.sqrt(x+y)
-    return l
-
-def radius_cal(a,b,c):
-    p = (a+b+c)/2.0
-    s = np.sqrt(p*(p-a)*(p-b)*(p-c))
-    r = (a*b*c)/4.0/s
-    return r
+    def radius_cal(self,a,b,c):
+        p = (a+b+c)/2.0
+        s = np.sqrt(p*(p-a)*(p-b)*(p-c))
+        r = (a*b*c)/4.0/s
+        return r
 
 
 
-def cmd_vel_callback(data):
-    global min_curvature,flag
-    stop_flag = Float64(lenth_cal(float(odom_point_x) , float(goal_point_x) , float(odom_point_y) , float(goal_point_y)))
-    if  stop_flag.data <= 0.3:
-        speed_data.data = 0
-        turn_data.data = 0
-    else:
-        turn_data.data=data.angular.z
-        if flag == 1:
-            speed_data.data= data.linear.x*1.18
-        elif flag == 2:
-            speed_data.data= data.linear.x*1.75
-        elif min_curvature.data <= 3:
-            speed_data.data= data.linear.x*1.03
+    def cmd_vel_callback(self,data):
+        stop_flag = Float64(self.lenth_cal(float(self.odom_point_x) , float(self.goal_point_x) , float(self.odom_point_y) , float(self.goal_point_y)))
+        data.angular.z= (0 if abs(data.angular.z) < 0.05 else data.angular.z)    
+        if data.angular.z == 0:
+            data.linear.x =data.linear.x *1.6
+        elif math.fabs(data.angular.z)<0.25:
+            data.linear.x =data.linear.x *1.0
+            data.angular.z=data.angular.z*1.2
         else:
-            speed_data.data= data.linear.x*1.55   
-        #if(math.fabs(turn_data.data)<10):
-        #    turn_data.data*=1.0
-        #    speed_data.data=data.linear.x*220    #20-math.fabs(turn_data.data)*1.0
-        #    
-        #else:
-        #    speed_data.data=data.linear.x*220      #5
-    cmd_data.linear.x = speed_data.data
-    cmd_data.angular.z = turn_data.data    
-    pub_curvature.publish(min_curvature)
-    pub_speed.publish(speed_data)
-    pub_turn.publish(turn_data)
-    pub_cmd.publish(cmd_data)
+            data.linear.x =data.linear.x *0.92
+            data.angular.z =data.angular.z *1.76
+        if  stop_flag.data <= 0.3:
+            self.cmd_data.linear.x = 0
+            self.cmd_data.angular.z = 0
+        else:
+            self.cmd_data.angular.z=data.angular.z
+            if self.flag == 1:
+                self.cmd_data.linear.x= data.linear.x*1.18
+            elif self.flag == 2:
+                self.cmd_data.linear.x= data.linear.x*1.75
+            elif self.min_curvature.data <= 3:
+                self.cmd_data.linear.x= data.linear.x*1.03
+            else:
+                self.cmd_data.linear.x= data.linear.x*1.55      
+        self.pub_cmd.publish(self.cmd_data)
 
 
 
 
-def path_callback(data):  
-    global flag     
-    if len(data.poses) <= point_width*2:
-        index1 = 0
-        index2 = (len(data.poses)-1)//2
-        index3 = len(data.poses)-1
-    elif (len(data.poses) > (point_width*2)) and (len(data.poses) <= (mid_point+point_width)):
-        index1 = (len(data.poses)-1)-(point_width*2)
-        index2 = (len(data.poses)-1)-point_width
-        index3 = len(data.poses)-1
-    elif len(data.poses) > (mid_point+point_width):
-        index1 = mid_point-point_width
-        index2 = mid_point
-        index3 = mid_point+point_width
-    else:
-        index1 = index2 = index3 = 0
-    if len(data.poses)<=120:
-        flag = 1
-    elif len(data.poses)<=300:
-        flag = 2
+    def path_callback(self,data):       
+        if len(data.poses) <= self.point_width*2:
+            index1 = 0
+            index2 = (len(data.poses)-1)//2
+            index3 = len(data.poses)-1
+        elif (len(data.poses) > (self.point_width*2)) and (len(data.poses) <= (self.mid_point+self.point_width)):
+            index1 = (len(data.poses)-1)-(self.point_width*2)
+            index2 = (len(data.poses)-1)-self.point_width
+            index3 = len(data.poses)-1
+        elif len(data.poses) > (self.mid_point+self.point_width):
+            index1 = self.mid_point-self.point_width
+            index2 = self.mid_point
+            index3 = self.mid_point+self.point_width
+        else:
+            index1 = index2 = index3 = 0
+        if len(data.poses)<=120:
+            self.flag = 1
+        elif len(data.poses)<=300:
+            self.flag = 2
 
-    point1.header.frame_id = 'map'
-    point1.point.x = data.poses[index1].pose.position.x
-    point1.point.y = data.poses[index1].pose.position.y
-    pub_point1.publish(point1)
+        self.point1.header.frame_id = 'map'
+        self.point1.point.x = data.poses[index1].pose.position.x
+        self.point1.point.y = data.poses[index1].pose.position.y
+        self.pub_point1.publish(self.point1)
 
-    point2.header.frame_id = 'map'
-    point2.point.x = data.poses[index2].pose.position.x
-    point2.point.y = data.poses[index2].pose.position.y
-    pub_point2.publish(point2)
+        self.point2.header.frame_id = 'map'
+        self.point2.point.x = data.poses[index2].pose.position.x
+        self.point2.point.y = data.poses[index2].pose.position.y
+        self.pub_point2.publish(self.point2)
 
-    point3.header.frame_id = 'map'
-    point3.point.x = data.poses[index3].pose.position.x
-    point3.point.y = data.poses[index3].pose.position.y
-    pub_point3.publish(point3)
+        self.point3.header.frame_id = 'map'
+        self.point3.point.x = data.poses[index3].pose.position.x
+        self.point3.point.y = data.poses[index3].pose.position.y
+        self.pub_point3.publish(self.point3)
 
-    if index1 >= 0:
-        global min_curvature
-        min_curvature = Float64(1000.0)
-        for i in range(0,index1): 
-            len1 = lenth_cal(data.poses[index1-i].pose.position.x , data.poses[index2-i].pose.position.x , data.poses[index1-i].pose.position.y , data.poses[index2-i].pose.position.y)
-            len2 = lenth_cal(data.poses[index2-i].pose.position.x , data.poses[index3-i].pose.position.x , data.poses[index2-i].pose.position.y , data.poses[index3-i].pose.position.y)
-            len3 = lenth_cal(data.poses[index1-i].pose.position.x , data.poses[index3-i].pose.position.x , data.poses[index1-i].pose.position.y , data.poses[index3-i].pose.position.y)
-            curvature = Float64(radius_cal(len1 , len2 , len3))
-            if curvature.data <= min_curvature.data:
-                min_curvature.data = curvature.data
-    #k1 = Float64((data.poses[index1].pose.position.y - data.poses[0].pose.position.y)/(data.poses[index1].pose.position.x - data.poses[0].pose.position.x))
-    #k2 = Float64((data.poses[index2].pose.position.y - data.poses[index1].pose.position.y)/(data.poses[index2].pose.position.x - data.poses[index1].pose.position.x))
-    #k_err = Float64(k2.data - k1.data)
-   
+        if index1 >= 0:
+            self.min_curvature = Float64(1000.0)
+            for i in range(0,index1): 
+                len1 = self.lenth_cal(data.poses[index1-i].pose.position.x , data.poses[index2-i].pose.position.x , data.poses[index1-i].pose.position.y , data.poses[index2-i].pose.position.y)
+                len2 = self.lenth_cal(data.poses[index2-i].pose.position.x , data.poses[index3-i].pose.position.x , data.poses[index2-i].pose.position.y , data.poses[index3-i].pose.position.y)
+                len3 = self.lenth_cal(data.poses[index1-i].pose.position.x , data.poses[index3-i].pose.position.x , data.poses[index1-i].pose.position.y , data.poses[index3-i].pose.position.y)
+                curvature = Float64(self.radius_cal(len1 , len2 , len3))
+                if curvature.data <= self.min_curvature.data:
+                    self.min_curvature.data = curvature.data
+       
     
 if __name__ == '__main__':
     try:
-        rospy.init_node('curvature_cal', anonymous = True)#初始化节点
-        rospy.Subscriber("/servo/cmd_vel", 
+        rospy.init_node('curvature_cal', anonymous = True)
+        Node = path_following()
+        rospy.Subscriber("/vesc/cmd_vel", 
                          Twist, 
-                         cmd_vel_callback)
+                         Node.cmd_vel_callback)
         rospy.Subscriber("/move_base/TebLocalPlannerROS/global_plan", 
                          Path, 
-                         path_callback)       
+                         Node.path_callback)       
         rospy.Subscriber("/move_base/goal", 
                          MoveBaseActionGoal, 
-                         get_goal_callback)
+                         Node.get_goal_callback)
         rospy.Subscriber("/odom", 
                          Odometry, 
-                         odom_callback) 
+                         Node.odom_callback) 
         
 
         rospy.spin()

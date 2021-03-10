@@ -27,7 +27,7 @@
   <!-- <node pkg="racecar_gazebo" type="visualize_path.py" name="visualize_path" /> -->
   
   <!-- ************cmd_vel变换输出************ -->
-  <node name="servo_commands" pkg="racecar_gazebo" type="servo_commands.py" />
+  <!-- <node name="servo_commands" pkg="racecar_gazebo" type="servo_commands.py" /> -->
   <node name="curvature_cal" pkg="racecar_gazebo" type="curvature_cal.py" />
 	<!-- 比赛计时器 -->
   <node pkg="racecar_gazebo" type="race_timer.py" name="race_timer" output="screen"/>
