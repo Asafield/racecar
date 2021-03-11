@@ -79,19 +79,21 @@ class path_following:
             if self.flag == 1:
                 self.cmd_data.linear.x = data.linear.x*1.1
             elif self.flag == 2:
-                self.cmd_data.linear.x = data.linear.x*1.30
+                self.cmd_data.linear.x = data.linear.x*1.3
             elif self.flag == 3:
                 self.cmd_data.linear.x = data.linear.x*1.90
             elif self.min_curvature.data <= 3:
                 self.cmd_data.linear.x = data.linear.x*1.03
             else:
-                self.cmd_data.linear.x = data.linear.x*1.55      
+                self.cmd_data.linear.x = data.linear.x*1.65      
         self.pub_cmd.publish(self.cmd_data)
 
 
 
 
-    def path_callback(self,data):       
+    def path_callback(self,data):
+        # x = len(data.poses) 
+        # print(x)  
         if len(data.poses) <= self.point_width*2:
             index1 = 0
             index2 = (len(data.poses)-1)//2
@@ -106,12 +108,14 @@ class path_following:
             index3 = self.mid_point+self.point_width
         else:
             index1 = index2 = index3 = 0
-        if len(data.poses)<=50:
+        if len(data.poses)<=70:
             self.flag = 1
         elif len(data.poses)<=120:
             self.flag = 2
         elif len(data.poses)<=300:
             self.flag = 3
+        else:
+            self.flag = 0
 
         self.point1.header.frame_id = 'map'
         self.point1.point.x = data.poses[index1].pose.position.x
@@ -156,7 +160,7 @@ if __name__ == '__main__':
                          Odometry, 
                          Node.odom_callback) 
         
-
+        
         rospy.spin()
     except rospy.ROSInterruptException:
         pass
